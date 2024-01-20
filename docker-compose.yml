@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  finotech_server:
+    container_name: finotech_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    env_file:
+      - env/.development.env
+    ports:
+      - '4000:4000'
+    volumes:
+      - .:/app/
+    depends_on:
+      - finotech_postgres
+  finotech_postgres:
+    image: postgres
+    restart: always
+    container_name: finotech_postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: finotech
+    ports:
+      - '5433:5432'
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+volumes:
+  pg_data:
