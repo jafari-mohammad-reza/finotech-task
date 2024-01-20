@@ -1,8 +1,29 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { useContainer } from 'class-validator';
+import { ConfigService } from '@nestjs/config';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { Environments, SwaggerConf } from './share';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  const configService = app.get(ConfigService);
+  const env = configService.get('app.env');
+  app.enableShutdownHooks();
+  app.setGlobalPrefix('/api', {
+    exclude: ['/'],
+  });
+  app.enableVersioning({
+    prefix: 'v',
+    type: VersioningType.URI,
+  });
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
+  );
+  if (env !== Environments.PRODUCTION) {
+    SwaggerConf(app, configService);
+  }
+  await app.listen(configService.get('app.port'));
 }
 bootstrap();
