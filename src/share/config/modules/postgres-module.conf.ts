@@ -16,16 +16,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       password: this.configService.get('postgres.password'),
       database: this.configService.get('postgres.name'),
       synchronize: this.configService.get('postgres.synchronize'),
-      dropSchema: false,
       keepConnectionAlive: true,
       logging: this.configService.get('postgres.logging'),
       entities: [join(__dirname, '..', '..', '..', '**', '*.entity{.ts,.js}')],
-      migrations: [join(__dirname, 'migrations', '**', '*{.ts,.js}')],
-      cli: {
-        entitiesDir: 'src',
-        migrationsDir: join('src', 'postgres', 'migrations'),
-        subscribersDir: 'subscriber',
-      },
     } as TypeOrmModuleOptions;
   }
 }

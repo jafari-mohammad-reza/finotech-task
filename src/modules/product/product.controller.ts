@@ -1,10 +1,10 @@
 import { Controller } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { ProductService } from './product.service';
 
 @Controller({
-  path: 'auth',
+  path: 'product',
   version: '1',
 })
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+export class ProductController {
+  constructor(private readonly authService: ProductService) {}
 }
