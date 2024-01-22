@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { Environments, SwaggerConf } from './share';
+import { CommonResponseInterceptor, Environments, SwaggerConf } from './share';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +21,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
+  app.useGlobalInterceptors(new CommonResponseInterceptor());
   if (env !== Environments.PRODUCTION) {
     SwaggerConf(app, configService);
   }
