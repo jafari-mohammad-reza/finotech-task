@@ -9,7 +9,6 @@ import { BaseRepository } from './base.repository';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ParentEntity } from './entities/parent.entity';
 
-
 export class PostgresRepository<
   Entity extends ParentEntity,
 > extends BaseRepository<Entity> {
