@@ -2,6 +2,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Environments } from 'src/share/enums';
 import { appConfig, authConfig, postgresConfig, swaggerConf } from '../schemas';
 import { EmailConf } from '../schemas/email.conf';
+import { redisConf } from '../schemas/redis.conf';
 
 let envFilePath: string;
 switch (process.env.NODE_ENV) {
@@ -22,5 +23,12 @@ switch (process.env.NODE_ENV) {
 export const ConfigModuleConf = ConfigModule.forRoot({
   isGlobal: true,
   envFilePath,
-  load: [appConfig, postgresConfig, authConfig, swaggerConf, EmailConf],
+  load: [
+    appConfig,
+    postgresConfig,
+    authConfig,
+    swaggerConf,
+    EmailConf,
+    redisConf,
+  ],
 });

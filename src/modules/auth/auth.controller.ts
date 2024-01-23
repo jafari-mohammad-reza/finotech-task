@@ -1,35 +1,40 @@
-import { Controller, Post, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { EmailDto, TokenResponse } from './dto';
+import { EmailDto, LoginDto, RegisterDto, TokenResponse } from './dto';
 import { Request, Response } from 'express';
 import { IdDto } from 'src/share/dto/id.dto';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 @Controller({
   path: 'auth',
   version: '1',
 })
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('login')
+  @ApiConsumes('application/x-www-form-urlencoded')
   async login(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
+    @Body() dto: LoginDto,
   ): Promise<TokenResponse> {
     return;
   }
   @Post('register')
-  async register(): Promise<void> {
-    return;
+  @ApiConsumes('application/x-www-form-urlencoded')
+  async register(@Body() dto: RegisterDto): Promise<void> {
+    await this.authService.register(dto);
   }
   @Post('verify-email')
-  async verifyEmail(@Query() { token }: IdDto): Promise<void> {
-    return;
+  async verifyEmail(@Query() dto: IdDto): Promise<void> {
+    await this.authService.verifyEmail(dto.token);
   }
   @Post('resend-verifcation')
   async resendVerification(@Query() { email }: EmailDto): Promise<void> {
-    return;
+    await this.authService.sendVerificationEmail(email);
   }
-  @Post('access-token')
+  @Get('access-token')
   async accessToken(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,

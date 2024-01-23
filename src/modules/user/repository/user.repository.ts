@@ -11,4 +11,13 @@ export class UserRepository extends PostgresRepository<User> {
   ) {
     super(_repository);
   }
+  async findByEmail(email: string): Promise<User> {
+    return await this._repository.findOne({ where: { email } });
+  }
+  async verifyUser(user: User): Promise<number> {
+    const { affected } = await this._repository.update(user.id, {
+      isVerified: true,
+    });
+    return affected;
+  }
 }

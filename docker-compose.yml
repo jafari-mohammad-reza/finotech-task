@@ -9,11 +9,12 @@ services:
     env_file:
       - env/.development.env
     ports:
-      - '4000:4000'
+      - '5000:5000'
     volumes:
       - .:/app/
     depends_on:
       - finotech_postgres
+      - finotech_redis
   finotech_postgres:
     image: postgres
     restart: always
@@ -26,5 +27,16 @@ services:
       - '5433:5432'
     volumes:
       - pg_data:/var/lib/postgresql/data
+  finotech_redis:
+    image: redis:alpine
+    container_name: finotech_redis
+    ports:
+      - '6380:6379'
+    restart: on-failure
+    volumes:
+      - redis-data:/data/
+      - redis-conf:/usr/local/etc/redis/redis.conf
 volumes:
   pg_data:
+  redis-data:
+  redis-conf:

@@ -12,6 +12,7 @@ export class User extends ParentEntity {
   email: string;
   @Column({ type: 'varchar', nullable: false })
   password: string;
+
   @Column({ type: 'boolean', default: false })
   isVerified: boolean;
   @OneToMany(() => Product, (product) => product.creator, {
