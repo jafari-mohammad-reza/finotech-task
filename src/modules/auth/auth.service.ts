@@ -4,6 +4,8 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { User, UserRepository } from '../user/repository';
 import { LoginDto, RegisterDto, TokenResponse } from './dto';
@@ -93,7 +95,19 @@ export class AuthService {
     }
   }
   async getAccessToken(refreshToken: string): Promise<string> {
-    return;
+    if (!refreshToken) {
+      throw new NotFoundException(AuthMessages.REFRESH_TOKEN_NOT_EXIST);
+    }
+    const { identifier, exp } =
+      await this.tokenService.decodeToken(refreshToken);
+
+    if (new Date(exp * 1000) <= new Date()) {
+      throw new BadRequestException(AuthMessages.INVALID_TOKEN);
+    }
+    return await this.tokenService.generateJwtToken(
+      identifier as number,
+      '30m',
+    );
   }
   private async validVerificationEmail(email: string): Promise<void> {
     const existUser = await this.emailExist(email);

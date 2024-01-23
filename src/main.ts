@@ -4,12 +4,13 @@ import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { CommonResponseInterceptor, Environments, SwaggerConf } from './share';
-
+import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService);
   const env = configService.get('app.env');
+  app.use(cookieParser());
   app.enableShutdownHooks();
   app.setGlobalPrefix('/api', {
     exclude: ['/'],

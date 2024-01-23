@@ -5,6 +5,8 @@ import { v4 } from 'uuid';
 import { tokenIdKey } from '../constants/token-keys.constant';
 import { TokenResponse } from 'src/modules/auth/dto';
 import { ConfigService } from '@nestjs/config';
+import { Decipher } from 'crypto';
+import { TokenDecodeResponse } from '../types';
 
 @Injectable()
 export class TokenService {
@@ -35,6 +37,13 @@ export class TokenService {
       accessToken,
       refreshToken,
     };
+  }
+  async decodeToken(token: string): Promise<TokenDecodeResponse> {
+    const decoded = (await this.jwtService.decode(
+      token,
+    )) as TokenDecodeResponse;
+
+    return decoded;
   }
   async generateJwtToken(identifier: number, exp: string): Promise<string> {
     return await this.jwtService.signAsync(

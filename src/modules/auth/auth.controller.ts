@@ -1,10 +1,12 @@
 import { Body, Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { EmailDto, LoginDto, RegisterDto, TokenResponse } from './dto';
-import { Request, Response } from 'express';
+import { EmailDto, LoginDto, RegisterDto } from './dto';
+import { Response } from 'express';
 import { IdDto } from 'src/share/dto/id.dto';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { STATUS_CODES } from 'http';
+
+import { AuthToken } from 'src/share';
+import { TokenEnum } from 'src/share';
 
 @Controller({
   path: 'auth',
@@ -22,7 +24,7 @@ export class AuthController {
       .cookie('access_token', accessToken, {
         httpOnly: false,
       })
-      .cookie('access_token', accessToken, { httpOnly: true })
+      .cookie('refresh_token', refreshToken, { httpOnly: true })
       .json({
         accessToken,
         refreshToken,
@@ -43,10 +45,15 @@ export class AuthController {
   }
   @Get('access-token')
   async accessToken(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-  ): Promise<TokenResponse> {
-    return;
+    @AuthToken(TokenEnum.RefreshToken) refreshToken: string,
+    @Res() response: Response,
+  ) {
+    const accessToken = await this.authService.getAccessToken(refreshToken);
+
+    return response
+      .status(200)
+      .cookie('access_token', accessToken, { httpOnly: true })
+      .json({ accessToken });
   }
 }
 
