@@ -4,6 +4,7 @@ import { EmailDto, LoginDto, RegisterDto, TokenResponse } from './dto';
 import { Request, Response } from 'express';
 import { IdDto } from 'src/share/dto/id.dto';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { STATUS_CODES } from 'http';
 
 @Controller({
   path: 'auth',
@@ -14,12 +15,18 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('login')
   @ApiConsumes('application/x-www-form-urlencoded')
-  async login(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-    @Body() dto: LoginDto,
-  ): Promise<TokenResponse> {
-    return;
+  async login(@Res() response: Response, @Body() dto: LoginDto) {
+    const { accessToken, refreshToken } = await this.authService.login(dto);
+    response
+      .status(200)
+      .cookie('access_token', accessToken, {
+        httpOnly: false,
+      })
+      .cookie('access_token', accessToken, { httpOnly: true })
+      .json({
+        accessToken,
+        refreshToken,
+      });
   }
   @Post('register')
   @ApiConsumes('application/x-www-form-urlencoded')

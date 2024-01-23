@@ -5,5 +5,6 @@ export const JwtModuleConf = JwtModule.registerAsync({
   inject: [ConfigService],
   useFactory: (config: ConfigService) => ({
     secret: config.getOrThrow('auth.jwtSecret'),
+    global: true,
   }),
 });

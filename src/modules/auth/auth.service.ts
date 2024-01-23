@@ -9,7 +9,7 @@ import { User, UserRepository } from '../user/repository';
 import { LoginDto, RegisterDto, TokenResponse } from './dto';
 import { MailService } from '../email/email.service';
 import { TokenService } from '../common/providers/token.service';
-import { hash, genSalt } from 'bcryptjs';
+import { hash, genSalt, compare } from 'bcryptjs';
 import { AuthMessages } from './enum/auth-messages.enum';
 import { ConfigService } from '@nestjs/config';
 import { UpdateFailed } from 'src/share/exceptions';
@@ -26,7 +26,19 @@ export class AuthService {
     this.logger = new Logger(AuthService.name);
   }
   async login(dto: LoginDto): Promise<TokenResponse> {
-    return;
+    const { email, password } = dto;
+    const existUser = await this.emailExist(email);
+    if (!existUser) {
+      throw new BadRequestException(AuthMessages.INVALID_CREDENTIALS);
+    }
+    if (!existUser.isVerified) {
+      throw new BadRequestException(AuthMessages.ACCOUNT_NOT_VERIFIED);
+    }
+    const validPassword = await compare(password, existUser.password);
+    if (!validPassword) {
+      throw new BadRequestException(AuthMessages.INVALID_CREDENTIALS);
+    }
+    return await this.tokenService.getAuthenticationToken(existUser.id);
   }
   async register(dto: RegisterDto): Promise<void> {
     const { email, firstName, lastName, password } = dto;
