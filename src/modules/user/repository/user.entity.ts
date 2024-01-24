@@ -4,9 +4,9 @@ import { Product } from '../../product/repository/product.entity';
 
 @Entity()
 export class User extends ParentEntity {
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: true })
   firstName: string;
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: true })
   lastName: string;
   @Column({ type: 'varchar', nullable: false, unique: true })
   email: string;

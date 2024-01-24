@@ -7,7 +7,12 @@ import { UserSeedModule } from './user/user-seed.module';
 import { ProductSeedModule } from './product/product-seed.module';
 
 @Module({
-  imports: [ConfigModuleConf, TypeOrmModuleConf, UserSeedModule,ProductSeedModule],
+  imports: [
+    ConfigModuleConf,
+    TypeOrmModuleConf,
+    UserSeedModule,
+    ProductSeedModule,
+  ],
 })
 export class SeedModule {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
