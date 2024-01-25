@@ -55,12 +55,12 @@ export class PostgresRepository<
     return await this.repository.find(options);
   }
 
-  public async delete(id: string): Promise<{ affected: number }> {
+  public async delete(id: number): Promise<{ affected: number }> {
     const result = await this.repository.delete(id);
     return { affected: result.affected };
   }
 
-  public async softDelete(id: string): Promise<{ affected: number }> {
+  public async softDelete(id: number): Promise<{ affected: number }> {
     const result = await this.repository.softDelete(id);
     return { affected: result.affected };
   }
@@ -79,7 +79,7 @@ export class PostgresRepository<
   }
 
   public async update(
-    id: string,
+    id: number,
     data: QueryDeepPartialEntity<Entity>,
   ): Promise<{ affected: number }> {
     const result = await this.repository.update(id, data);

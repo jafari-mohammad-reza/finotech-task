@@ -11,11 +11,11 @@ export abstract class BaseRepository<Entity> {
 
   abstract findAll(): Promise<Entity[]>;
 
-  abstract delete(id: string): Promise<{ affected: number }>;
+  abstract delete(id: number): Promise<{ affected: number }>;
 
-  abstract softDelete(id: string): Promise<{ affected: number }>;
+  abstract softDelete(id: number): Promise<{ affected: number }>;
 
-  abstract update(id: string, data: any): Promise<{ affected: number }>;
+  abstract update(id: number, data: any): Promise<{ affected: number }>;
 
   abstract findOne(
     column: string,

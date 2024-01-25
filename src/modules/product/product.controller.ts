@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -11,9 +12,10 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { PaginationResponse } from '../../share/dto/response/paginated-response.dto';
-import { ProductResponse } from './dto/product-response';
+import { ProductResponse, CreateProduct, UpdateProduct } from './dto';
 
-import { ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ServiceUnavailableException } from '@nestjs/common';
 import {
   AuthGuard,
   AuthenticatedUser,
@@ -37,26 +39,37 @@ export class ProductController {
     @Query() dto: PaginatedRequest,
   ): Promise<PaginationResponse<ProductResponse[]>> {
     const { page, count } = dto;
-    const result = await this.productService.ownedProducts(userId, page, count);
-    return new PaginationResponse(result, result.length, page, count);
+    const [result, resultCount] =
+      await this.productService.getPaginatedProducts(userId, page, count);
+    return new PaginationResponse(result, resultCount, page, count);
   }
-  @Get('')
+  @Get()
   async getProducts(
     @Query() dto: PaginatedRequest,
   ): Promise<PaginationResponse<ProductResponse[]>> {
     const { page, count } = dto;
-    return;
+    const [result, resultCount] =
+      await this.productService.getPaginatedProducts(page, count);
+    return new PaginationResponse(result, resultCount, page, count);
   }
   @Post()
-  async createProduct(): Promise<ProductResponse> {
-    return;
+  @ApiConsumes('application/x-www-form-urlencoded')
+  async createProduct(
+    @AuthenticatedUser() userId: number,
+    @Body() dto: CreateProduct,
+  ): Promise<ProductResponse> {
+    return await this.productService.createProduct(userId, dto);
   }
   @Patch('/:id')
-  async updateProduct(@Param() { id }: IdDto): Promise<void> {
-    return;
+  @ApiConsumes('application/x-www-form-urlencoded')
+  async updateProduct(
+    @Param() { id }: IdDto,
+    @Body() dto: UpdateProduct,
+  ): Promise<void> {
+    await this.productService.updateProduct(id, dto);
   }
   @Delete('/:id')
   async deleteProduct(@Param() { id }: IdDto): Promise<void> {
-    return;
+    await this.productService.deleteProduct(id);
   }
 }

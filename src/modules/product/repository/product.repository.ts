@@ -2,7 +2,7 @@ import { PostgresRepository } from '../../../database/postgres.repository';
 import { Product } from './product.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 @Injectable()
 export class ProductRepository extends PostgresRepository<Product> {
   constructor(
@@ -11,31 +11,36 @@ export class ProductRepository extends PostgresRepository<Product> {
   ) {
     super(_repository);
   }
-  async findUserProducts(
-    userId: number,
+  async findPaginatedProducts(
     page: number,
     limit: number,
-  ): Promise<Product[]> {
+    userId?: number,
+  ): Promise<[Product[], number]> {
     const skip = (page - 1) * limit;
-    try {
-      const products = await this._repository
-        .createQueryBuilder('product')
-        .select([
-          'product.title',
-          'product.description',
-          'creator.email as owner',
-        ])
-        .innerJoin('product.creator', 'creator')
-        .where('creator.id = :userId', { userId })
-        .orderBy('product.createdAt', 'DESC')
-        .skip(skip)
-        .take(limit)
-        .getMany();
-
-      return products;
-    } catch (error) {
-      console.error(error);
-      throw error;
+    const queryOptions: FindManyOptions<Product> = {
+      order: {
+        createdAt: 'DESC',
+      },
+      take: limit,
+      skip: skip,
+      relations: ['creator'],
+    };
+    if (userId !== undefined) {
+      queryOptions.where = { creator: { id: userId } };
     }
+    return await this._repository.findAndCount(queryOptions);
+  }
+  async createProduct(
+    userId: number,
+    title: string,
+    description: string,
+  ): Promise<Product> {
+    return await this.save({
+      title,
+      description,
+      creator: {
+        id: userId,
+      },
+    });
   }
 }
