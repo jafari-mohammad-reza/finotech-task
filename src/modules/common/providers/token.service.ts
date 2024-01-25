@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CacheService } from 'src/database/redis.service';
 import { v4 } from 'uuid';
@@ -15,12 +15,18 @@ export class TokenService {
     private readonly configService: ConfigService,
   ) {}
   async generateTokenId(identifier: string): Promise<string> {
+    if (!identifier) {
+      throw new BadRequestException('invalid input');
+    }
     const uuid = v4();
     const { name, ttl } = tokenIdKey(uuid);
     await this.redisService.set(name, identifier, ttl);
     return uuid;
   }
   async verifyTokenId(token: string): Promise<string> {
+    if (!token) {
+      throw new BadRequestException('invalid token');
+    }
     const { name } = tokenIdKey(token);
     const existId = await this.redisService.get(name);
     if (existId) {
