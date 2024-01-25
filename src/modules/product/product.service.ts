@@ -5,10 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ProductRepository } from './repository/product.repository';
-import { Product } from './repository/product.entity';
 import { ProductResponse } from './dto/product-response.dto';
 import { CreateProduct, UpdateProduct } from './dto';
-import { title } from 'process';
 import { UserRepository } from '../user/repository/user.repository';
 import { ProductMessages } from './enum';
 import { DeleteFailed, UpdateFailed } from 'src/share/exceptions';
@@ -53,7 +51,7 @@ export class ProductService {
     );
     return {
       title: response.title,
-      description: response.title,
+      description: response.description,
       owner: user.email,
     };
   }

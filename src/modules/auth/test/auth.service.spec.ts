@@ -22,9 +22,6 @@ import { UpdateFailed } from 'src/share/exceptions';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let mailerService: MailService;
-  let tokenService: TokenService;
-  let userRepository: UserRepository;
 
   const userRepositoryMock = {
     create: jest.fn(),
@@ -65,9 +62,6 @@ describe('AuthService', () => {
       .compile();
 
     authService = module.get<AuthService>(AuthService);
-    mailerService = module.get<MailService>(MailService);
-    userRepository = module.get<UserRepository>(UserRepository);
-    tokenService = module.get<TokenService>(TokenService);
   });
 
   describe('login', () => {
