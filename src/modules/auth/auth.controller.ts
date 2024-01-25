@@ -1,12 +1,20 @@
-import { Body, Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { EmailDto, LoginDto, RegisterDto } from './dto';
 import { Response } from 'express';
-import { IdDto } from 'src/share/dto/id.dto';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 import { AuthToken } from 'src/share';
 import { TokenEnum } from 'src/share';
+import { TokenIdDto } from 'src/share/dto/id.dto';
 
 @Controller({
   path: 'auth',
@@ -20,7 +28,7 @@ export class AuthController {
   async login(@Res() response: Response, @Body() dto: LoginDto) {
     const { accessToken, refreshToken } = await this.authService.login(dto);
     response
-      .status(200)
+      .status(HttpStatus.OK)
       .cookie('access_token', accessToken, {
         httpOnly: false,
       })
@@ -36,7 +44,7 @@ export class AuthController {
     await this.authService.register(dto);
   }
   @Post('verify-email')
-  async verifyEmail(@Query() dto: IdDto): Promise<void> {
+  async verifyEmail(@Query() dto: TokenIdDto): Promise<void> {
     await this.authService.verifyEmail(dto.token);
   }
   @Post('resend-verifcation')
@@ -51,7 +59,7 @@ export class AuthController {
     const accessToken = await this.authService.getAccessToken(refreshToken);
 
     return response
-      .status(200)
+      .status(HttpStatus.OK)
       .cookie('access_token', accessToken, { httpOnly: true })
       .json({ accessToken });
   }

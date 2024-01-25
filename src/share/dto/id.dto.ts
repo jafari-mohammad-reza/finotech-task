@@ -1,9 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
 
-export class IdDto {
+export class TokenIdDto {
   @ApiProperty({ type: String, required: true, name: 'token' })
   @IsUUID()
   @IsNotEmpty()
   token: string;
+}
+export class IdDto {
+  @ApiProperty({ type: Number, required: true, name: 'id' })
+  @IsNumber()
+  @IsNotEmpty()
+  id: number;
 }
