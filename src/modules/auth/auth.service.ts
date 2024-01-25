@@ -5,7 +5,6 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { User, UserRepository } from '../user/repository';
 import { LoginDto, RegisterDto, TokenResponse } from './dto';
@@ -109,13 +108,13 @@ export class AuthService {
       '30m',
     );
   }
-  private async validVerificationEmail(email: string): Promise<void> {
+  async validVerificationEmail(email: string): Promise<void> {
     const existUser = await this.emailExist(email);
     if (!existUser || existUser.isVerified) {
       throw new BadRequestException(AuthMessages.INVALID_EMAIL);
     }
   }
-  private async emailExist(email: string): Promise<User> {
+  async emailExist(email: string): Promise<User> {
     return await this.userRepository.findByEmail(email);
   }
 }
