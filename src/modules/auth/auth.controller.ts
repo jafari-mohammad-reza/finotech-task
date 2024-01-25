@@ -14,7 +14,7 @@ import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 import { AuthToken } from 'src/share';
 import { TokenEnum } from 'src/share';
-import { TokenIdDto } from 'src/share/dto/id.dto';
+import { TokenIdDto } from 'src/share';
 
 @Controller({
   path: 'auth',
