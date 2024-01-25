@@ -5,7 +5,6 @@ import { v4 } from 'uuid';
 import { tokenIdKey } from '../constants/token-keys.constant';
 import { TokenResponse } from 'src/modules/auth/dto';
 import { ConfigService } from '@nestjs/config';
-import { Decipher } from 'crypto';
 import { TokenDecodeResponse } from '../types';
 
 @Injectable()
