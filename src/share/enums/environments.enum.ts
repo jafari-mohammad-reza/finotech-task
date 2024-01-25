@@ -1,6 +1,6 @@
 export enum Environments {
   DEVELOP = 'development',
   PRODUCTION = 'production',
-  TEST = 'test',
+  Test = 'test',
   Seed = 'seed',
 }

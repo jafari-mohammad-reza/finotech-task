@@ -4,11 +4,12 @@ import { TokenService } from '../providers';
 import { JwtService } from '@nestjs/jwt';
 import { CacheService } from '../../../database/redis.service';
 import { ConfigModuleConf } from '../../../share/config/modules/config-module.conf';
+import { RedisModuleConf } from 'src/share/config/modules/redis-module.conf';
 let tokenService: TokenService;
 describe('Token service spec', function () {
   beforeEach(async () => {
     const testModule = await Test.createTestingModule({
-      imports: [ConfigModuleConf, JwtModuleConf],
+      imports: [ConfigModuleConf, JwtModuleConf, RedisModuleConf],
       providers: [TokenService, JwtService, CacheService],
       exports: [TokenService],
     }).compile();

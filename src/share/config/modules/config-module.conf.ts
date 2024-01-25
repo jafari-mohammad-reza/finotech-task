@@ -10,7 +10,10 @@ switch (process.env.NODE_ENV) {
     envFilePath = './env/.development.env';
     break;
   case Environments.Seed:
-    envFilePath = './env/.seed.env';
+    envFilePath = './env/.local-dev.env';
+    break;
+  case Environments.Test:
+    envFilePath = './env/.local-dev.env';
     break;
   case Environments.PRODUCTION:
     envFilePath = '.env';
